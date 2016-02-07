@@ -1,0 +1,33 @@
+## After finishing a script, a special matrix-object
+## that can cache its inverse is created
+
+makeCacheMatrix <- function(x = matrix()) {
+  mlocal  <- NULL
+  set  <- function(y){
+    x <<- y
+    mlocal <<- NULL 
+  }
+  get  <- function() x
+  setinverse  <- function(inverse) mlocal  <<- inverse
+  getinverse  <- function() mlocal
+  list(set= set, get = get, 
+       setinverse = setinverse, 
+       getinverse = getinverse)
+  
+}
+
+## Here it computes its inverse
+## If the inverse has already been calculated and it hadn't bring any changes to the matrix,
+## then the cachesolve retrieves the inverse from the cache
+
+cacheSolve <- function(x, ...) {
+  mlocal  <- x$getinverse()
+  if (!is.null(mlocal)){
+    message("getting cached data")
+    return(mlocal)
+  }
+  data  <- x$get()
+  mlocal  <- solve(data, ...)
+  x$setinverse(mlocal)
+  mlocal
+}
